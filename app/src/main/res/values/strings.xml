@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">My_First_App</string>
+    <string name="question_text">constantinople is a largest city in Turkey.</string>
+    <string name="false_text">false</string>
+    <string name="true_text">true</string>
+    <string name="menu_settings">menu_settings</string>
+    <string name="correct_toast">Correct!</string>
+    <string name="incorrect_toast">Incorrect!</string>
+    <string name="prev_button">Prev</string>
+    <string name="next_button">Next</string>
+    <string name="question_vipul">Vipul Sharma is good boy?</string>
+    <string name="question_veronica">Veronica is good girl?</string>
+    <string name="question_prime">Is 40 a prime number?</string>
+    <string name="question_pluto">Is pluto still a planet of milkiway galaxy?</string>
+</resources>
