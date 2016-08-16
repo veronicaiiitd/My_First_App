@@ -1,5 +1,6 @@
 package com.example.veronica.my_first_app;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,17 +10,21 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final int NUM_COUNT = 1000;
 
     private Button mTrueButton;
     private Button mFalseButton;
-    private ImageButton mNextButton;
-    private ImageButton mPrevButton;
+    private Button mNextButton;
     private TextView mQuestionTextView;
 
     private int mCurrentIndex = 0;
+    private int mNumbersCount = 0;
+    private int mRandomNumber = 0;
 
     private TrueFalse[] mQuestionBank = new TrueFalse[]{
             new TrueFalse(R.string.question_pluto, false),
@@ -27,6 +32,21 @@ public class MainActivity extends AppCompatActivity {
             new TrueFalse(R.string.question_vipul, true),
             new TrueFalse(R.string.question_veronica, true)
     };
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            Log.d(TAG, "ORIENTATION_LANDSCAPE");
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Log.d(TAG, "ORIENTATION_PORTRAIT");
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
+
+        //setContentView(R.layout.activity_main);
+    }
 
     @Override
     protected void onStart() {
@@ -37,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause(){
         super.onPause();
-        Log.d(TAG, "Insie onPause() method");
+        Log.d(TAG, "Inside onPause() method");
     }
 
     @Override
@@ -64,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Inside onCreate Method");
         setContentView(R.layout.activity_main);
 
+        //System.out.print("mCurrentIndex: " + mCurrentIndex);
+
         mQuestionTextView = (TextView)findViewById(R.id.question_textViewID);
         updateQuestion();
 
@@ -83,37 +105,30 @@ public class MainActivity extends AppCompatActivity {
            }
         });
 
-        mNextButton = (ImageButton)findViewById(R.id.nextImageButtonID);
+        mNextButton = (Button)findViewById(R.id.nextButtonID);
         mNextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                //mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
             }
         });
 
-        mPrevButton = (ImageButton)findViewById(R.id.prevImageButtonID);
-        mPrevButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-
-                if(mCurrentIndex - 1 < 0){
-                    mCurrentIndex = (mQuestionBank.length - (mCurrentIndex + 1)) % mQuestionBank.length;
-                } else{
-                    mCurrentIndex = (mCurrentIndex - 1)  % mQuestionBank.length;
-                }
-
-                updateQuestion();
-            }
-        });
     }
 
     private void updateQuestion(){
-        int question = mQuestionBank[mCurrentIndex].getQuestion();
+        int randomNumber = getRandomNumber();
+        randomNumber = mRandomNumber;
+
+        String question = "Q" + ++mNumbersCount + " : Is " + randomNumber + " a prime number ? ";
         mQuestionTextView.setText(question);
+
     }
 
     private void checkAnswer(boolean userPressedTrue){
+
+        //Boolean randomNumber = findPrimeNumber();
+        
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
 
         int toastMessageId = 0;
@@ -125,5 +140,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Toast.makeText(this, toastMessageId, Toast.LENGTH_SHORT).show();
+    }
+
+    private int getRandomNumber(){
+        Random randomNumber = new Random();
+        return randomNumber.nextInt(NUM_COUNT);
+    }
+
+    private void findPrimeNumber(){
+
     }
 }
