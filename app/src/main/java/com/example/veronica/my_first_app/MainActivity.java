@@ -26,12 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private int mNumbersCount = 0;
     private int mRandomNumber = 0;
 
-    private TrueFalse[] mQuestionBank = new TrueFalse[]{
-            new TrueFalse(R.string.question_pluto, false),
-            new TrueFalse(R.string.question_prime, false),
-            new TrueFalse(R.string.question_vipul, true),
-            new TrueFalse(R.string.question_veronica, true)
-    };
+    private TrueFalse mQuestionBank;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig){
@@ -72,82 +67,143 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Inside onStop() method");
     }
 
+    /*
+    @date: 14th Aug 2016
+    @function: Function called to destroy the activity and free the resources
+    allotted to current activity
+     */
     @Override
     protected void onDestroy(){
         super.onDestroy();
         Log.d(TAG, "Inside onDestroy() method");
     }
 
+    /*
+    @date: 13th Aug 2016
+    @function: This is an overloaded function of Activity class.
+    It controls the link between the View layer and Model layer.
+    This method is used to create an activity on startup. It initializes
+    the widgets on of android application and captures
+    the data from model layer to be viewed on View layer.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //call the super class constructor
         super.onCreate(savedInstanceState);
+        //logging the information -- debug log
         Log.d(TAG, "Inside onCreate Method");
         setContentView(R.layout.activity_main);
 
-        //System.out.print("mCurrentIndex: " + mCurrentIndex);
-
+        //capture the view id used to display the question
         mQuestionTextView = (TextView)findViewById(R.id.question_textViewID);
+        //update the random generated value question
         updateQuestion();
 
+        //set a listener on 'True' button to describe the activity for further
+        //proceedings
         mTrueButton = (Button)findViewById(R.id.trueButtonID);
         mTrueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                //check if the input for question given b user is same as actual answer.
                 checkAnswer(true);
             }
         });
 
+        //set a listener on 'False' button to describe the activity for further
+        //proceedings
         mFalseButton = (Button)findViewById(R.id.falseButtonID);
         mFalseButton.setOnClickListener(new View.OnClickListener(){
            @Override
             public void onClick(View view){
+               //check if the input for question given b user is same as actual answer.
                checkAnswer(false);
            }
         });
 
+        //set a listener on 'Next' button to describe the activity for further
+        //proceedings -- to display next random generated question
         mNextButton = (Button)findViewById(R.id.nextButtonID);
         mNextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                //mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                //update the random generated value question
                 updateQuestion();
             }
         });
-
     }
 
+    /*
+    @date: 14th Aug 2016
+    @function: Function to set the Generated question in TrueFalse Class
+     */
     private void updateQuestion(){
-        int randomNumber = getRandomNumber();
-        randomNumber = mRandomNumber;
+        //Set the value of generated random number in 'mRandomNumber' global variables
+        getRandomNumber();
 
-        String question = "Q" + ++mNumbersCount + " : Is " + randomNumber + " a prime number ? ";
+        //Form the Question to be displayed on screen
+        String question = "Q" + ++mNumbersCount + " : Is " + mRandomNumber + " a prime number ? ";
+        //set the value of question in TrueFalse Class
         mQuestionTextView.setText(question);
-
     }
 
+    /*
+    @date: 14th Aug 2016
+    @function: Function to test if answer entered by user and Actual answer matches or not
+    @param: Boolean (value entered by user)
+     */
     private void checkAnswer(boolean userPressedTrue){
 
-        //Boolean randomNumber = findPrimeNumber();
-        
-        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+        //program to calculate if generated number is prime or not
+        findPrimeNumber();
+
+        boolean answerIsTrue = mQuestionBank.isTrueQuestion();
 
         int toastMessageId = 0;
 
+        //check if userPressed input is same as Actual answer
         if(userPressedTrue == answerIsTrue){
+            // if same -- put value of 'toastMessageId' as 'Correct'
             toastMessageId = R.string.correct_toast;
         }else{
+            //otherwise 'Incorrect'
             toastMessageId = R.string.incorrect_toast;
         }
 
         Toast.makeText(this, toastMessageId, Toast.LENGTH_SHORT).show();
     }
 
-    private int getRandomNumber(){
+    /*
+    @date: 16th Aug 2016
+    @function: Function to Generate a single random number between 1 - NUM_COUNT
+     */
+    private void getRandomNumber(){
         Random randomNumber = new Random();
-        return randomNumber.nextInt(NUM_COUNT);
+        mRandomNumber = randomNumber.nextInt(NUM_COUNT);
     }
 
-    private void findPrimeNumber(){
+    /*
+    @date: 17th Aug 2016
+    @function: Function to calculate whether the randomly generated number is prime or not
+     */
+    private void findPrimeNumber() {
 
+    //flag to determine whether number is indivisible or not
+    boolean isDivisible = false;
+
+    // '0', '1' and '2' are prime number
+    for (int i = 2; i <= mRandomNumber; i++) {
+        if (mRandomNumber % i == 0) {
+            isDivisible = true;
+            break;
+        }
+    }
+
+    if (isDivisible == false) {
+        //number is a prime number
+        mQuestionBank.setTrueQuestion(true);
+    } else
+        //number is not prime
+        mQuestionBank.setTrueQuestion(false);
     }
 }
