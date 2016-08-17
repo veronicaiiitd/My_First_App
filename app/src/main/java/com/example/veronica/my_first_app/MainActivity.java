@@ -15,7 +15,9 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final String KEY_INDEX = "index";
     private static final int NUM_COUNT = 1000;
+    private static final int QUESTION_COUNT = 20;
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -23,44 +25,81 @@ public class MainActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     private int mCurrentIndex = 0;
-    private int mNumbersCount = 0;
-    private int mRandomNumber = 0;
 
-    private TrueFalse mQuestionBank;
+    private TrueFalse[] mQuestionBank =
+            new TrueFalse[QUESTION_COUNT];
 
+    /*
+    @date: 17th Aug 2016
+    @function: Function to save the state of all activities during
+    change in device configuration
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSavedInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+    }
+
+    /*
+    @date: 16th Aug 2016
+    @function: Function called when device configuration changed
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
 
+        //Logging when orientation changes to 'landscape'
         if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
             Log.d(TAG, "ORIENTATION_LANDSCAPE");
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
         } else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            //Logging when orientation changes to ''
             Log.d(TAG, "ORIENTATION_PORTRAIT");
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
         }
 
         //setContentView(R.layout.activity_main);
     }
 
+    /*
+    @date: 13th Aug 2016
+    @function: Function called when activity is started (if
+    activity is already created but not started)
+     */
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "Inside onStart() method");
     }
 
+    /*
+    @date: 13th Aug 2016
+    @function: Function called when acivity is paused (if
+    activity is not in foreground but is partially visible)
+     */
     @Override
     protected void onPause(){
         super.onPause();
         Log.d(TAG, "Inside onPause() method");
     }
 
+    /*
+    @date: 13th Aug 2016
+    @function: Function called when activity is resumed (if
+    activity is in foreground and is visible)
+     */
     @Override
     protected void onResume(){
         super.onResume();
         Log.d(TAG, "Inside onResume() method");
     }
 
+    /*
+    @date: 13th Aug 2016
+    @function: Function called when activity is stopped (if
+    activity is not visible)
+     */
     @Override
     protected void onStop(){
         super.onStop();
@@ -94,8 +133,32 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Inside onCreate Method");
         setContentView(R.layout.activity_main);
 
+        //Autopopulate the mQuestionBank Array with random generated values
+        //Fill array only is array is not empty
+
+        if(savedInstanceState == null){
+            for(int i=0; i < mQuestionBank.length; i++){
+                //Set the value of generated random number in 'mRandomNumber' global variables
+                int randomNumber = getRandomNumber();
+                //Form the Question to be displayed on screen
+                String question = "Q" + ++mCurrentIndex + " : Is " + randomNumber + " a prime number ? ";
+                //program to calculate if generated number is prime or not
+                boolean isNumberPrime = findPrimeNumber(randomNumber);
+
+                mQuestionBank[i] = new TrueFalse(question, isNumberPrime);
+            }
+            //set mCurrentIndex to 0 -- to iterate array from start
+            mCurrentIndex = 0;
+        }
+
         //capture the view id used to display the question
         mQuestionTextView = (TextView)findViewById(R.id.question_textViewID);
+
+        if(savedInstanceState != null){
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            //mCurrentQuestion = savedInstanceState.getString(KEY_INDEX, null);
+        }
+
         //update the random generated value question
         updateQuestion();
 
@@ -127,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 //update the random generated value question
                 updateQuestion();
             }
@@ -138,13 +202,11 @@ public class MainActivity extends AppCompatActivity {
     @function: Function to set the Generated question in TrueFalse Class
      */
     private void updateQuestion(){
-        //Set the value of generated random number in 'mRandomNumber' global variables
-        getRandomNumber();
 
-        //Form the Question to be displayed on screen
-        String question = "Q" + ++mNumbersCount + " : Is " + mRandomNumber + " a prime number ? ";
+        String question = mQuestionBank[mCurrentIndex].getQuestion();
         //set the value of question in TrueFalse Class
         mQuestionTextView.setText(question);
+
     }
 
     /*
@@ -154,10 +216,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void checkAnswer(boolean userPressedTrue){
 
-        //program to calculate if generated number is prime or not
-        findPrimeNumber();
-
-        boolean answerIsTrue = mQuestionBank.isTrueQuestion();
+        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
 
         int toastMessageId = 0;
 
@@ -177,33 +236,37 @@ public class MainActivity extends AppCompatActivity {
     @date: 16th Aug 2016
     @function: Function to Generate a single random number between 1 - NUM_COUNT
      */
-    private void getRandomNumber(){
+    private int getRandomNumber(){
+        //Log.d(TAG, "Inside getRandomNumber() method");
         Random randomNumber = new Random();
-        mRandomNumber = randomNumber.nextInt(NUM_COUNT);
+        return (randomNumber.nextInt(NUM_COUNT));
+
     }
 
     /*
     @date: 17th Aug 2016
     @function: Function to calculate whether the randomly generated number is prime or not
+    @return: Boolean value indicating whether number is prime or not
      */
-    private void findPrimeNumber() {
+    private boolean findPrimeNumber(int randomNumber) {
 
-    //flag to determine whether number is indivisible or not
-    boolean isDivisible = false;
+        //Log.d(TAG, "Inside findPrimeNumber() method");
+        //flag to determine whether number is indivisible or not
+        boolean isDivisible = false;
 
-    // '0', '1' and '2' are prime number
-    for (int i = 2; i <= mRandomNumber; i++) {
-        if (mRandomNumber % i == 0) {
-            isDivisible = true;
-            break;
+        // '0', '1' and '2' are prime number
+        for (int i = 2; i < randomNumber; i++) {
+            if (randomNumber % i == 0) {
+                isDivisible = true;
+                break;
+            }
         }
-    }
 
-    if (isDivisible == false) {
-        //number is a prime number
-        mQuestionBank.setTrueQuestion(true);
-    } else
-        //number is not prime
-        mQuestionBank.setTrueQuestion(false);
-    }
+        if (isDivisible == false) {
+            //number is a prime number
+            return true;
+        } else
+            //number is not prime
+            return false;
+        }
 }

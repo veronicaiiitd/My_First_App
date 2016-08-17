@@ -1,23 +1,23 @@
 package com.example.veronica.my_first_app;
 
 /**
- * Created by veronica on 12/08/16.
+ * Created by veronica on 12/08/16
  */
 public class TrueFalse {
-    private int mQuestion;
+    private String mQuestion;
 
     private boolean mTrueQuestion;
 
-    public TrueFalse(int question, boolean trueQuestion){
+    public TrueFalse(String question, boolean trueQuestion){
         mQuestion = question;
         mTrueQuestion = trueQuestion;
     }
 
-    public int getQuestion(){
+    public String getQuestion(){
         return mQuestion;
     }
 
-    public void setQuestion(int question){
+    public void setQuestion(String question){
         mQuestion = question;
     }
 
@@ -29,6 +29,3 @@ public class TrueFalse {
         mTrueQuestion = trueQuestion;
     }
 }
-
-
-
