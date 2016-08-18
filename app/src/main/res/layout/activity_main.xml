@@ -17,6 +17,9 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:textStyle="bold|italic"
+        android:fontFamily="sans-serif"
+        android:textAppearance="?android:textAppearanceMedium"
         android:padding="24dp" />
 
     <LinearLayout
@@ -24,18 +27,18 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/trueButtonID"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/true_text"
-        />
-    <Button
-        android:id="@+id/falseButtonID"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/false_text"
-        />
+        <Button
+            android:id="@+id/trueButtonID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/true_text"
+            />
+        <Button
+            android:id="@+id/falseButtonID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/false_text"
+            />
     </LinearLayout>
 
     <!-- <LinearLayout
@@ -43,11 +46,13 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="wrap_content"
         android:orientation="horizontal" > -->
 
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/nextButtonID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/next_button"
+        android:drawableRight="@drawable/right_arrow"
+        android:padding="17dp"
         />
 
         <!-- <ImageButton
