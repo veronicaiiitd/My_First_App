@@ -6,4 +6,5 @@
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
     <string name="next_button">Next</string>
+    <string name="pressOption">First press True or False Button</string>
 </resources>

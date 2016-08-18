@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,12 +16,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
     private static final int NUM_COUNT = 1000;
-    private static final int QUESTION_COUNT = 20;
+    private static final int QUESTION_COUNT = 5;
 
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
     private TextView mQuestionTextView;
+
+    private boolean mTrueCheck = false;
+    private boolean mFalseCheck = false;
 
     private int mCurrentIndex = 0;
 
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         //Autopopulate the mQuestionBank Array with random generated values
         //Fill array only is array is not empty
 
-        if(savedInstanceState == null){
+        if(savedInstanceState == null && (mQuestionBank!=null)){
             for(int i=0; i < mQuestionBank.length; i++){
                 //Set the value of generated random number in 'mRandomNumber' global variables
                 int randomNumber = getRandomNumber();
@@ -149,15 +151,12 @@ public class MainActivity extends AppCompatActivity {
             }
             //set mCurrentIndex to 0 -- to iterate array from start
             mCurrentIndex = 0;
+        }else{
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         }
 
         //capture the view id used to display the question
         mQuestionTextView = (TextView)findViewById(R.id.question_textViewID);
-
-        if(savedInstanceState != null){
-            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
-            //mCurrentQuestion = savedInstanceState.getString(KEY_INDEX, null);
-        }
 
         //update the random generated value question
         updateQuestion();
@@ -168,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                mTrueCheck = true;
                 //check if the input for question given b user is same as actual answer.
                 checkAnswer(true);
             }
@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener(){
            @Override
             public void onClick(View view){
+               mFalseCheck = true;
                //check if the input for question given b user is same as actual answer.
                checkAnswer(false);
            }
@@ -190,11 +191,27 @@ public class MainActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                //update the random generated value question
-                updateQuestion();
+
+                if((mTrueCheck == true) || (mFalseCheck == true)){
+                    resetChecks();
+                    mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                    //update the random generated value question
+                    updateQuestion();
+                }else{
+                    int toastPressOptionID = R.string.pressOption;
+                    Toast.makeText(MainActivity.this, toastPressOptionID, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    /*
+    @date:
+    @function:
+     */
+    private void resetChecks(){
+        mTrueCheck = false;
+        mFalseCheck = false;
     }
 
     /*
