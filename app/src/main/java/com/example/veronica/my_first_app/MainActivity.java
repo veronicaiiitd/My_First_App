@@ -1,5 +1,6 @@
 package com.example.veronica.my_first_app;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,15 +22,29 @@ public class MainActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mCheatButton;
     private TextView mQuestionTextView;
 
     private boolean mTrueCheck = false;
     private boolean mFalseCheck = false;
 
     private int mCurrentIndex = 0;
+    private boolean mIsCheater;
 
     private TrueFalse[] mQuestionBank =
             new TrueFalse[QUESTION_COUNT];
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "Inside onActivityResult method");
+        if(data == null){
+            return;
+        }
+
+        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+    }
 
     /*
     @date: 17th Aug 2016
@@ -195,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
                 if((mTrueCheck == true) || (mFalseCheck == true)){
                     resetChecks();
                     mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                    //set the mIsCheater boolean variable to false
+                    mIsCheater = false;
                     //update the random generated value question
                     updateQuestion();
                 }else{
@@ -202,6 +219,20 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, toastPressOptionID, Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        //set a listener on 'Cheat' button to describe the activity for further
+        //proceedings
+        mCheatButton = (Button)findViewById(R.id.cheatButtonID);
+        mCheatButton.setOnClickListener(new View.OnClickListener(){
+           @Override
+            public void onClick(View view){
+                //create an intent to pass into startActivity method
+               Intent i = new Intent(MainActivity.this, CheatActivity.class);
+               boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+               i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE,answerIsTrue);
+               startActivityForResult(i,0);
+           }
         });
     }
 
@@ -237,13 +268,18 @@ public class MainActivity extends AppCompatActivity {
 
         int toastMessageId = 0;
 
-        //check if userPressed input is same as Actual answer
-        if(userPressedTrue == answerIsTrue){
-            // if same -- put value of 'toastMessageId' as 'Correct'
-            toastMessageId = R.string.correct_toast;
+        if(mIsCheater){
+            //if user has cheated the answer, display the appropriate reply
+            toastMessageId = R.string.judgment_toast;
         }else{
-            //otherwise 'Incorrect'
-            toastMessageId = R.string.incorrect_toast;
+            //check if userPressed input is same as Actual answer
+            if(userPressedTrue == answerIsTrue){
+                // if same -- put value of 'toastMessageId' as 'Correct'
+                toastMessageId = R.string.correct_toast;
+            }else{
+                //otherwise 'Incorrect'
+                toastMessageId = R.string.incorrect_toast;
+            }
         }
 
         Toast.makeText(this, toastMessageId, Toast.LENGTH_SHORT).show();

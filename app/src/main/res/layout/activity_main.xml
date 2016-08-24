@@ -46,6 +46,20 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="wrap_content"
         android:orientation="horizontal" > -->
 
+    <Button
+        android:id="@+id/hint_ButtonID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hint_button"
+        />
+
+    <Button
+        android:id="@+id/cheatButtonID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cheat_button"
+        />
+
     <Button style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/nextButtonID"
         android:layout_width="wrap_content"
