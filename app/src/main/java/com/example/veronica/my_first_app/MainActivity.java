@@ -23,16 +23,19 @@ public class MainActivity extends AppCompatActivity {
     private Button mFalseButton;
     private Button mNextButton;
     private Button mCheatButton;
+    private Button mHintButton;
     private TextView mQuestionTextView;
 
     private boolean mTrueCheck = false;
     private boolean mFalseCheck = false;
 
     private int mCurrentIndex = 0;
+    private int mDivisibleBy = 1;
     private boolean mIsCheater;
 
     private TrueFalse[] mQuestionBank =
             new TrueFalse[QUESTION_COUNT];
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
@@ -75,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "ORIENTATION_PORTRAIT");
             //Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
         }
-
         //setContentView(R.layout.activity_main);
     }
 
@@ -160,7 +162,9 @@ public class MainActivity extends AppCompatActivity {
                 //Form the Question to be displayed on screen
                 String question = "Q" + ++mCurrentIndex + " : Is " + randomNumber + " a prime number ? ";
                 //program to calculate if generated number is prime or not
-                boolean isNumberPrime = findPrimeNumber(randomNumber);
+                boolean isNumberPrime = findPrimeNumber(randomNumber, i);
+
+                //if(isNumberPrime)
 
                 mQuestionBank[i] = new TrueFalse(question, isNumberPrime);
             }
@@ -182,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                Log.d(TAG, "Inside onClick method of TrueButton");
                 mTrueCheck = true;
                 //check if the input for question given b user is same as actual answer.
                 checkAnswer(true);
@@ -194,10 +199,53 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener(){
            @Override
             public void onClick(View view){
+               Log.d(TAG, "Inside onClick method of FalseButton");
                mFalseCheck = true;
                //check if the input for question given b user is same as actual answer.
                checkAnswer(false);
            }
+        });
+
+
+        //set a listener on 'Hint' button to describe the activity for further
+        //proceedings
+        mHintButton = (Button)findViewById(R.id.hint_ButtonID);
+        mHintButton.setOnClickListener(new View.OnClickListener(){
+           @Override
+            public void onClick(View view){
+               Log.d(TAG, "Inside onClick method of HintButton");
+               String hintString="";
+               //create an intent to pass to startActivity method (to pass to HintActivity)
+               Intent i = new Intent(MainActivity.this, HintActivity.class);
+               int divisibleBy = mQuestionBank[mCurrentIndex].getFirstDivisibleNumber();
+               //check if the number greater than 1 (since default value
+               // is 1 as every number is divisible by 1)
+               if(divisibleBy != 1){
+                   //means number is not prime
+                    hintString = hintString + "Check divisibility by" + divisibleBy;
+               }else{
+                   //number is prime
+                    hintString = hintString + "Number is divisible by 1 and Itself";
+               }
+
+               i.putExtra(HintActivity.EXTRA_HINT_TEXT, hintString);
+               startActivity(i);
+           }
+        });
+
+        //set a listener on 'Cheat' button to describe the activity for further
+        //proceedings
+        mCheatButton = (Button)findViewById(R.id.cheatButtonID);
+        mCheatButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.d(TAG, "Inside onClick method of CheatButton");
+                //create an intent to pass into startActivity method (to pass to CheatActivity)
+                Intent i = new Intent(MainActivity.this, CheatActivity.class);
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+                i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE,answerIsTrue);
+                startActivityForResult(i,0);
+            }
         });
 
         //set a listener on 'Next' button to describe the activity for further
@@ -207,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                Log.d(TAG, "Inside onClick method of NextButton");
                 if((mTrueCheck == true) || (mFalseCheck == true)){
                     resetChecks();
                     mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
@@ -219,20 +268,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, toastPressOptionID, Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-
-        //set a listener on 'Cheat' button to describe the activity for further
-        //proceedings
-        mCheatButton = (Button)findViewById(R.id.cheatButtonID);
-        mCheatButton.setOnClickListener(new View.OnClickListener(){
-           @Override
-            public void onClick(View view){
-                //create an intent to pass into startActivity method
-               Intent i = new Intent(MainActivity.this, CheatActivity.class);
-               boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
-               i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE,answerIsTrue);
-               startActivityForResult(i,0);
-           }
         });
     }
 
@@ -301,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
     @function: Function to calculate whether the randomly generated number is prime or not
     @return: Boolean value indicating whether number is prime or not
      */
-    private boolean findPrimeNumber(int randomNumber) {
+    private boolean findPrimeNumber(int randomNumber, int index) {
 
         //Log.d(TAG, "Inside findPrimeNumber() method");
         //flag to determine whether number is indivisible or not

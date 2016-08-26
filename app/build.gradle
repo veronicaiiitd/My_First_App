@@ -9,7 +9,7 @@ def extension = android {
     defaultConfig {
         applicationId "com.example.veronica.my_first_app"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
