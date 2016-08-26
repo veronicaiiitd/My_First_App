@@ -161,11 +161,9 @@ public class MainActivity extends AppCompatActivity {
                 //Form the Question to be displayed on screen
                 String question = "Q" + ++mCurrentIndex + " : Is " + randomNumber + " a prime number ? ";
                 //program to calculate if generated number is prime or not
-                //boolean isNumberPrime = findPrimeNumber(randomNumber, i);
-                TrueFalse questionBankObj = findPrimeNumber(randomNumber, i);
-                questionBankObj.setQuestion(questionBankObj.getQuestion()+question);
+                boolean isNumberPrime = findPrimeNumber(randomNumber);
 
-                mQuestionBank[i] = questionBankObj;
+                mQuestionBank[i] = new TrueFalse(question, isNumberPrime);
             }
             //set mCurrentIndex to 0 -- to iterate array from start
             mCurrentIndex = 0;
@@ -216,18 +214,6 @@ public class MainActivity extends AppCompatActivity {
                String hintString="";
                //create an intent to pass to startActivity method (to pass to HintActivity)
                Intent i = new Intent(MainActivity.this, HintActivity.class);
-               int divisibleBy = mQuestionBank[mCurrentIndex].getFirstDivisibleNumber();
-               //check if the number greater than 1 (since default value
-               // is 1 as every number is divisible by 1)
-               if(divisibleBy != 1){
-                   //means number is not prime
-                    hintString = hintString + "Check divisibility by" + divisibleBy;
-               }else{
-                   //number is prime
-                    hintString = hintString + "Number is divisible by 1 and Itself";
-               }
-
-               i.putExtra(HintActivity.EXTRA_HINT_TEXT, hintString);
                startActivity(i);
            }
         });
@@ -335,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
     @function: Function to calculate whether the randomly generated number is prime or not
     @return: Boolean value indicating whether number is prime or not
      */
-    private TrueFalse findPrimeNumber(int randomNumber, int index) {
+    private boolean findPrimeNumber(int randomNumber) {
 
         //Log.d(TAG, "Inside findPrimeNumber() method");
         //flag to determine whether number is indivisible or not
@@ -353,11 +339,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (isDivisible == false) {
             //number is a prime number
-            return (new TrueFalse("",true,divisibleNumber));
+            return true;
             //return true;
         } else
             //number is not prime
-            return (new TrueFalse("",false,divisibleNumber));
+            return false;
             //return false;
         }
 }

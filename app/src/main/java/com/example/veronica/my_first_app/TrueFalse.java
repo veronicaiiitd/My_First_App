@@ -7,13 +7,10 @@ public class TrueFalse {
     private String mQuestion;
 
     private boolean mTrueQuestion;
-    //default divisible value (every number is divisible by 1)
-    private int firstDivisibleNumber ;
 
-    public TrueFalse(String question, boolean trueQuestion, int divisibleBy){
+    public TrueFalse(String question, boolean trueQuestion){
         mQuestion = question;
         mTrueQuestion = trueQuestion;
-        firstDivisibleNumber = divisibleBy;
     }
 
     public String getQuestion(){
@@ -30,13 +27,5 @@ public class TrueFalse {
 
     public void setTrueQuestion(boolean trueQuestion){
         mTrueQuestion = trueQuestion;
-    }
-
-    public int getFirstDivisibleNumber(){
-        return firstDivisibleNumber;
-    }
-
-    public void setFirstDivisibleNumber(int number){
-        firstDivisibleNumber = number;
     }
 }

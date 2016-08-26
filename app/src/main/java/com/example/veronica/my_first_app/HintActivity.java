@@ -17,18 +17,11 @@ public class HintActivity extends Activity{
     private Button mShowHintButton;
     private TextView mShowHintTextView;
 
-    private String mShowHintText;
-
-    public static final String EXTRA_HINT_TEXT = "in.ac.iiitd.veronica1428.extra_hint_text";
-
     @Override
     protected void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_hint);
         Log.d(TAG, "Inside onCreate method");
-
-        //get the intent message value in mHintText string
-        mShowHintText = getIntent().getStringExtra(EXTRA_HINT_TEXT);
 
         mShowHintTextView = (TextView)findViewById(R.id.showHint_TextViewID);
 
@@ -37,7 +30,7 @@ public class HintActivity extends Activity{
         mShowHintButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                mShowHintTextView.setText(mShowHintText);
+                mShowHintTextView.setText(R.string.hint_text);
                 Log.d(TAG, "Inside onClick method of ShowHintButton");
             }
         });

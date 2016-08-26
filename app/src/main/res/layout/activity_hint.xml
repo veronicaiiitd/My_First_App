@@ -6,6 +6,18 @@
     android:gravity="center">
 
     <TextView
+        android:id="@+id/hint_TextViewId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        android:gravity="center_horizontal"
+        android:textStyle="bold|italic"
+        android:fontFamily="sans-serif"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:text="@string/hintWarning_text"
+        />
+
+    <TextView
         android:id="@+id/showHint_TextViewID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
