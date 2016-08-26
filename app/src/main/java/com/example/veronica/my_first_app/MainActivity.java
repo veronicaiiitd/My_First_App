@@ -1,5 +1,6 @@
 package com.example.veronica.my_first_app;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,15 +22,42 @@ public class MainActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mCheatButton;
+    private Button mHintButton;
     private TextView mQuestionTextView;
 
     private boolean mTrueCheck = false;
     private boolean mFalseCheck = false;
 
     private int mCurrentIndex = 0;
+    private boolean mIsCheater;
+    private boolean mIsHintProvided;
 
     private TrueFalse[] mQuestionBank =
             new TrueFalse[QUESTION_COUNT];
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "Inside onActivityResult method");
+        if(data == null){
+            return;
+        }
+
+        switch(requestCode){
+            case 0: mIsHintProvided = data.getBooleanExtra(HintActivity.EXTRA_HINT_SHOWN, false);
+                int toastMessageId = 0;
+                if(mIsHintProvided){
+                    toastMessageId = R.string.hintProvided_text;
+                    Toast.makeText(MainActivity.this, toastMessageId, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 1: mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+                break;
+        }
+    }
 
     /*
     @date: 17th Aug 2016
@@ -60,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "ORIENTATION_PORTRAIT");
             //Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
         }
-
         //setContentView(R.layout.activity_main);
     }
 
@@ -167,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                Log.d(TAG, "Inside onClick method of TrueButton");
                 mTrueCheck = true;
                 //check if the input for question given b user is same as actual answer.
                 checkAnswer(true);
@@ -179,10 +207,41 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener(){
            @Override
             public void onClick(View view){
+               Log.d(TAG, "Inside onClick method of FalseButton");
                mFalseCheck = true;
                //check if the input for question given b user is same as actual answer.
                checkAnswer(false);
            }
+        });
+
+
+        //set a listener on 'Hint' button to describe the activity for further
+        //proceedings
+        mHintButton = (Button)findViewById(R.id.hint_ButtonID);
+        mHintButton.setOnClickListener(new View.OnClickListener(){
+           @Override
+            public void onClick(View view){
+               Log.d(TAG, "Inside onClick method of HintButton");
+               String hintString="";
+               //create an intent to pass to startActivity method (to pass to HintActivity)
+               Intent i = new Intent(MainActivity.this, HintActivity.class);
+               startActivityForResult(i,0);
+           }
+        });
+
+        //set a listener on 'Cheat' button to describe the activity for further
+        //proceedings
+        mCheatButton = (Button)findViewById(R.id.cheatButtonID);
+        mCheatButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.d(TAG, "Inside onClick method of CheatButton");
+                //create an intent to pass into startActivity method (to pass to CheatActivity)
+                Intent i = new Intent(MainActivity.this, CheatActivity.class);
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+                i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE,answerIsTrue);
+                startActivityForResult(i,1);
+            }
         });
 
         //set a listener on 'Next' button to describe the activity for further
@@ -192,9 +251,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                Log.d(TAG, "Inside onClick method of NextButton");
                 if((mTrueCheck == true) || (mFalseCheck == true)){
                     resetChecks();
                     mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                    //set the mIsCheater boolean variable to false
+                    mIsCheater = false;
+                    //set the mIsHintProvided boolean variable to false
+                    mIsHintProvided = false;
                     //update the random generated value question
                     updateQuestion();
                 }else{
@@ -237,13 +301,18 @@ public class MainActivity extends AppCompatActivity {
 
         int toastMessageId = 0;
 
-        //check if userPressed input is same as Actual answer
-        if(userPressedTrue == answerIsTrue){
-            // if same -- put value of 'toastMessageId' as 'Correct'
-            toastMessageId = R.string.correct_toast;
+        if(mIsCheater){
+            //if user has cheated the answer, display the appropriate reply
+            toastMessageId = R.string.judgment_toast;
         }else{
-            //otherwise 'Incorrect'
-            toastMessageId = R.string.incorrect_toast;
+            //check if userPressed input is same as Actual answer
+            if(userPressedTrue == answerIsTrue){
+                // if same -- put value of 'toastMessageId' as 'Correct'
+                toastMessageId = R.string.correct_toast;
+            }else{
+                //otherwise 'Incorrect'
+                toastMessageId = R.string.incorrect_toast;
+            }
         }
 
         Toast.makeText(this, toastMessageId, Toast.LENGTH_SHORT).show();
@@ -270,11 +339,13 @@ public class MainActivity extends AppCompatActivity {
         //Log.d(TAG, "Inside findPrimeNumber() method");
         //flag to determine whether number is indivisible or not
         boolean isDivisible = false;
+        int divisibleNumber = 1;
 
         // '0', '1' and '2' are prime number
         for (int i = 2; i < randomNumber; i++) {
             if (randomNumber % i == 0) {
                 isDivisible = true;
+                divisibleNumber = i;
                 break;
             }
         }
@@ -282,8 +353,10 @@ public class MainActivity extends AppCompatActivity {
         if (isDivisible == false) {
             //number is a prime number
             return true;
+            //return true;
         } else
             //number is not prime
             return false;
+            //return false;
         }
 }
