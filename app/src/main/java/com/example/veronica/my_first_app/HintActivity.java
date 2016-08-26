@@ -30,7 +30,7 @@ public class HintActivity extends Activity{
         //get the intent message value in mHintText string
         mShowHintText = getIntent().getStringExtra(EXTRA_HINT_TEXT);
 
-        mShowHintTextView = (TextView)findViewById(R.id.hint_TextViewID);
+        mShowHintTextView = (TextView)findViewById(R.id.showHint_TextViewID);
 
         //get view id of Hint Button
         mShowHintButton = (Button)findViewById(R.id.showHint_ButtonID);

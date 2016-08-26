@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean mFalseCheck = false;
 
     private int mCurrentIndex = 0;
-    private int mDivisibleBy = 1;
     private boolean mIsCheater;
 
     private TrueFalse[] mQuestionBank =
@@ -162,11 +161,11 @@ public class MainActivity extends AppCompatActivity {
                 //Form the Question to be displayed on screen
                 String question = "Q" + ++mCurrentIndex + " : Is " + randomNumber + " a prime number ? ";
                 //program to calculate if generated number is prime or not
-                boolean isNumberPrime = findPrimeNumber(randomNumber, i);
+                //boolean isNumberPrime = findPrimeNumber(randomNumber, i);
+                TrueFalse questionBankObj = findPrimeNumber(randomNumber, i);
+                questionBankObj.setQuestion(questionBankObj.getQuestion()+question);
 
-                //if(isNumberPrime)
-
-                mQuestionBank[i] = new TrueFalse(question, isNumberPrime);
+                mQuestionBank[i] = questionBankObj;
             }
             //set mCurrentIndex to 0 -- to iterate array from start
             mCurrentIndex = 0;
@@ -336,25 +335,29 @@ public class MainActivity extends AppCompatActivity {
     @function: Function to calculate whether the randomly generated number is prime or not
     @return: Boolean value indicating whether number is prime or not
      */
-    private boolean findPrimeNumber(int randomNumber, int index) {
+    private TrueFalse findPrimeNumber(int randomNumber, int index) {
 
         //Log.d(TAG, "Inside findPrimeNumber() method");
         //flag to determine whether number is indivisible or not
         boolean isDivisible = false;
+        int divisibleNumber = 1;
 
         // '0', '1' and '2' are prime number
         for (int i = 2; i < randomNumber; i++) {
             if (randomNumber % i == 0) {
                 isDivisible = true;
+                divisibleNumber = i;
                 break;
             }
         }
 
         if (isDivisible == false) {
             //number is a prime number
-            return true;
+            return (new TrueFalse("",true,divisibleNumber));
+            //return true;
         } else
             //number is not prime
-            return false;
+            return (new TrueFalse("",false,divisibleNumber));
+            //return false;
         }
 }

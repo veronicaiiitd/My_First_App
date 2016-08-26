@@ -10,10 +10,10 @@ public class TrueFalse {
     //default divisible value (every number is divisible by 1)
     private int firstDivisibleNumber ;
 
-    public TrueFalse(String question, boolean trueQuestion){
+    public TrueFalse(String question, boolean trueQuestion, int divisibleBy){
         mQuestion = question;
         mTrueQuestion = trueQuestion;
-        firstDivisibleNumber = 1;
+        firstDivisibleNumber = divisibleBy;
     }
 
     public String getQuestion(){
