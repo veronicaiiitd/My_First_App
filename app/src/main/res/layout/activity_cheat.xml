@@ -20,6 +20,7 @@
         android:id="@+id/cheatHint_textViewID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAllCaps="true"
         android:padding="24dp"
         android:gravity="center_horizontal"
         android:textStyle="bold"

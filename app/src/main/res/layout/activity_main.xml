@@ -21,7 +21,8 @@ xmlns:tools="http://schemas.android.com/tools"
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <Button
             android:id="@+id/trueButtonID"
@@ -29,6 +30,7 @@ xmlns:tools="http://schemas.android.com/tools"
             android:layout_height="wrap_content"
             android:text="@string/true_text"
             />
+
         <Button
             android:id="@+id/falseButtonID"
             android:layout_width="wrap_content"
@@ -42,19 +44,26 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="wrap_content"
         android:orientation="horizontal" > -->
 
-    <Button
-        android:id="@+id/hint_ButtonID"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hint_button"
-        />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/cheatButtonID"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cheat_button"
-        />
+        <Button
+            android:id="@+id/hint_ButtonID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_button"
+            />
+
+        <Button
+            android:id="@+id/cheatButtonID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cheat_button"
+            />
+
+    </LinearLayout>
 
     <Button style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/nextButtonID"

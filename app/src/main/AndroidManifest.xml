@@ -17,8 +17,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".CheatActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name" />
         <activity android:name=".HintActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name" />
     </application>
 

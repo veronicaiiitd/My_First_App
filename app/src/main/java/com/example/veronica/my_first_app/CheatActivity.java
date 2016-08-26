@@ -14,6 +14,8 @@ import android.widget.TextView;
 public class CheatActivity extends Activity{
 
     private static final String TAG = "CheatActivity";
+    private static final String KEY_INDEX = "index1";
+
     private static boolean mAnswerIsTrue;
     public static final String EXTRA_ANSWER_IS_TRUE = "in.ac.iiitd.veronica1428.answer_is_true";
     public static final String EXTRA_ANSWER_SHOWN = "in.ac.iiitd.veronica1428.answer_shown";
@@ -46,13 +48,25 @@ public class CheatActivity extends Activity{
         Log.d(TAG, "Inside onDestroy method");
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        Log.d(TAG, "Inside onSaveInstanceState method");
+        savedInstanceState.putBoolean(KEY_INDEX, mAnswerIsTrue);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
         Log.d(TAG, "Inside onCreate method");
 
-        // "second argument" is default argument
-        mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
+        if(savedInstanceState!=null){
+            mAnswerIsTrue = savedInstanceState.getBoolean(KEY_INDEX, true);
+        }else{
+            // "second argument" is default argument
+            mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
+        }
 
         mCheatHintTextView = (TextView) findViewById(R.id.cheatHint_textViewID);
 
