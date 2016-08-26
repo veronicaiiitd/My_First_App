@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.view.View;
+import android.content.Intent;
 
 /**
  * Created by veronica on 24/08/16.
@@ -17,6 +18,8 @@ public class HintActivity extends Activity{
     private Button mShowHintButton;
     private TextView mShowHintTextView;
 
+    public static final String EXTRA_HINT_SHOWN = "in.ac.iiitd.veronica1428.extra_hint_shown";
+
     @Override
     protected void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
@@ -25,6 +28,8 @@ public class HintActivity extends Activity{
 
         mShowHintTextView = (TextView)findViewById(R.id.showHint_TextViewID);
 
+        setHintShownResult(false);
+
         //get view id of Hint Button
         mShowHintButton = (Button)findViewById(R.id.showHint_ButtonID);
         mShowHintButton.setOnClickListener(new View.OnClickListener(){
@@ -32,8 +37,17 @@ public class HintActivity extends Activity{
             public void onClick(View view){
                 mShowHintTextView.setText(R.string.hint_text);
                 Log.d(TAG, "Inside onClick method of ShowHintButton");
+
+                setHintShownResult(true);
             }
         });
+    }
+
+    private void setHintShownResult(boolean isHintShown){
+        Intent data = new Intent();
+
+        data.putExtra(EXTRA_HINT_SHOWN, isHintShown);
+        setResult(RESULT_OK, data);
     }
 
     @Override

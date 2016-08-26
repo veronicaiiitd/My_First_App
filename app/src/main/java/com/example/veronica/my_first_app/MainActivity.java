@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int mCurrentIndex = 0;
     private boolean mIsCheater;
+    private boolean mIsHintProvided;
 
     private TrueFalse[] mQuestionBank =
             new TrueFalse[QUESTION_COUNT];
@@ -45,7 +46,17 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+        switch(requestCode){
+            case 0: mIsHintProvided = data.getBooleanExtra(HintActivity.EXTRA_HINT_SHOWN, false);
+                int toastMessageId = 0;
+                if(mIsHintProvided){
+                    toastMessageId = R.string.hintProvided_text;
+                    Toast.makeText(MainActivity.this, toastMessageId, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 1: mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+                break;
+        }
     }
 
     /*
@@ -214,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                String hintString="";
                //create an intent to pass to startActivity method (to pass to HintActivity)
                Intent i = new Intent(MainActivity.this, HintActivity.class);
-               startActivity(i);
+               startActivityForResult(i,0);
            }
         });
 
@@ -229,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, CheatActivity.class);
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
                 i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE,answerIsTrue);
-                startActivityForResult(i,0);
+                startActivityForResult(i,1);
             }
         });
 
@@ -246,6 +257,8 @@ public class MainActivity extends AppCompatActivity {
                     mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                     //set the mIsCheater boolean variable to false
                     mIsCheater = false;
+                    //set the mIsHintProvided boolean variable to false
+                    mIsHintProvided = false;
                     //update the random generated value question
                     updateQuestion();
                 }else{

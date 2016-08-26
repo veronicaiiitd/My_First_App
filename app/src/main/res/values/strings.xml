@@ -15,4 +15,5 @@
     <string name="show_hint_button">Show Hint</string>
     <string name="hintWarning_text">Try Hard until you Succeed!!</string>
     <string name="hint_text">A prime number is a whole number greater than 1 whose only two whole-number factors are 1 and itself.</string>
+    <string name="hintProvided_text">Hint Provided</string>
 </resources>
